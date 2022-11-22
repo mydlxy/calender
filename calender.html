@@ -7,322 +7,334 @@
     <title>Document</title>
 </head>
 <body>
-    <div id="container">
+<div id="container">
 
-        <div class="title">
-            <div><input type="button" id="title-btn-left" value="&#60;" class="title-btn-hover"></input></div>
-            <div class="show_year_month"><div><label id="showMonth"></label></div><div><label id="showYear"></label></div></div>
-            <div><input type="button" id="title-btn-right" value="&#62;" class="title-btn-hover"></button></div>
-        </div>
-
-        <div  id="table">
-            
-            <div >
-                <ul class="tableRow">
-                    <li>周一</li>
-                    <li>周二</li>
-                    <li>周三</li>
-                    <li>周四</li>
-                    <li>周五</li>
-                    <li>周六</li>
-                    <li>周末</li>
-                </ul>
-            </div>
-            <div id="calender">
-
-            </div>
-
-        </div>
-
-        <div class="calender-footer">
-            <div class="button-group">
-              <label class="cal-footer-time">年：</label>   <input id="minusYear" class="cal" value="-" readonly="readonly"/>
-                    <input id="year" class="inp" value=""/>
-                    <input id ="plusYear" class="cal" value="+" readonly="readonly"/>
-            </div>
-            <div class="button-group"> 
-                <label class="cal-footer-time">月：</label>   <input id="minusMonth" class="cal" value="-" readonly="readonly">
-                    </input><input id="month" class="inp" value=""/>
-                    <input id ="plusMonth" class="cal" value="+" readonly="readonly">
-            </div>
-        </div>
-       
+    <div class="title">
+        <div><input type="button" id="title-btn-left" value="&#60;" class="title-btn-hover"></input></div>
+        <div class="show_year_month"><div><label id="showMonth"></label></div><div><label id="showYear"></label></div></div>
+        <div><input type="button" id="title-btn-right" value="&#62;" class="title-btn-hover"></button></div>
     </div>
+
+    <div  id="table">
+
+        <ul class="tableRow">
+            <li class="li-title">周一</li>
+            <li class="li-title">周二</li>
+            <li class="li-title">周三</li>
+            <li class="li-title">周四</li>
+            <li class="li-title">周五</li>
+            <li class="li-title">周六</li>
+            <li class="li-title">周末</li>
+        </ul>
+        <div id="calender">
+
+        </div>
+
+    </div>
+
+    <div class="calender-footer">
+        <div class="button-group">
+            <label class="cal-footer-time">年：</label>   <input id="minusYear" class="cal" value="-" readonly="readonly"/>
+            <input id="year" class="inp" value=""/>
+            <input id ="plusYear" class="cal" value="+" readonly="readonly"/>
+        </div>
+        <div class="button-group">
+            <label class="cal-footer-time">月：</label>   <input id="minusMonth" class="cal" value="-" readonly="readonly">
+        </input><input id="month" class="inp" value=""/>
+            <input id ="plusMonth" class="cal" value="+" readonly="readonly">
+        </div>
+    </div>
+
+</div>
 <script>
 
-/**
- *每个月第一天是周几 
- */
-function monthFirstWeekDay(year,month){
-    try{
-        weekDay =  new Date(year,month,1).getDay();
+
+    /**
+     * 计算日期对应周几
+     * */
+    function dateMapWeekDay(year,month,date){
+        let weekDay =  new Date(year,month,date).getDay();
         return weekDay === 0 ? 7 : weekDay;
-    }catch(e){
-        throw e;
+
     }
-    
-    
-}
 
-function monthLastWeekDay(year,month,day){
-    try{
-        weekDay =  new Date(year,month,day).getDay();
-        return weekDay === 0 ? 7 : weekDay;
-    }catch(e){
-        throw e;
+    /**
+     * 一个月有多少天
+     * 求2022年5月的天数参数： 2022， 5，0
+     *
+     */
+    function monthDays(year,month){
+
+        if(month < 0)
+            return new Date(year-1,12,0).getDate();
+        else
+            return new Date(year,month+1,0).getDate();
     }
-    
-}
-/**
- * 一个月有多少天
- * 求2022年5月的天数参数： 2022， 5，0
- */
-function monthDays(year,month){
-    
-    if(month < 0)
-        return new Date(year-1,12,0).getDate();
-    else
-        return new Date(year,month+1,0).getDate(); 
-}
-//需要更新的html元素
-//底部输入框中的年月
-const pageYear    = document.getElementById('year');
-const pageMonth   = document.getElementById('month');
-//一个月的日历
-const pageTable   = document.getElementById('calender');
-//头部中间的年月
-const showYear    = document.getElementById('showYear');
-const showMonth   = document.getElementById('showMonth');
+    //需要更新的html元素
+    //底部输入框中的年月
+    const inputYear    = document.getElementById('year');
+    const inputMonth   = document.getElementById('month');
+    //一个月的日历
+    const showMonthCalender   = document.getElementById('calender');
+    //头部中间的年月
+    const showYear    = document.getElementById('showYear');
+    const showMonth   = document.getElementById('showMonth');
 
-//年月输入框旁边的加减按钮；
-const minusMonth  = document.getElementById('minusMonth');
-const minusYear   = document.getElementById('minusYear');
-const plusMonth   = document.getElementById('plusMonth');
-const plusYear    = document.getElementById('plusYear');
-//头部的按钮 ：'<'  '>' title-btn-left,title-btn-right
+    //年月输入框旁边的加减按钮；
+    const minusMonth  = document.getElementById('minusMonth');
+    const minusYear   = document.getElementById('minusYear');
+    const plusMonth   = document.getElementById('plusMonth');
+    const plusYear    = document.getElementById('plusYear');
+    //头部的按钮 ：'<'  '>' title-btn-left,title-btn-right
 
-const btnLeft  = document.getElementById('title-btn-left');
-const btnRight = document.getElementById('title-btn-right')
+    const btnLeft  = document.getElementById('title-btn-left');
+    const btnRight = document.getElementById('title-btn-right')
 
 
-/**
- * 
- * lastMonthDays,上一个月份的天数；
- * curMonthDays, 当前展示月份的天数；
- * weekOfDay,展示月的第一天是周几；用来计算需要上一个月多少日期来填充当前月份的日历
- * lastWeekDay,展示月最后一天是周几；用来计算需要下一个月多少日期来填充当前月份的日历
- * currentDay：系统时间的几号；比如：2022-11-5  currentDay=5
- * 
- * */
-function produceMonthCalender(lastMonthDays,curMonthDays,weekOfDay,lastWeekDay,currentDay){
-    let showMonth="";
-    // var firstWeek=true;
-    //上一个月显示几天
-    let prev =  weekOfDay - 1;
-    //从上个月的几号开始显示
-    let prevDay = lastMonthDays - prev +1;
+    /**
+     *
+     * lastMonthDays,上一个月份的天数；
+     * curMonthDays, 当前展示月份的天数；
+     * weekOfDay,展示月的第一天是周几；用来计算需要上一个月多少日期来填充当前月份的日历
+     * lastWeekDay,展示月最后一天是周几；用来计算需要下一个月多少日期来填充当前月份的日历
+     * currentDay：系统时间的几号；比如：2022-11-5  currentDay=5
+     *
+     * */
+    function produceMonthCalender(lastMonthDays,curMonthDays,firstWeekOfDay,lastWeekDay,currentDay){
+        let createCalender="";
+        // var firstWeek=true;
+        //上一个月显示几天
+        let prev =  firstWeekOfDay - 1;
+        //从上个月的几号开始显示
+        let prevDay = lastMonthDays - prev +1;
 
-    //下一个月显示天数
-    let next = 7 - lastWeekDay;
-    //
-    let nextDay =1;
+        //下一个月显示天数
+        let next = 7 - lastWeekDay;
+        //
+        let nextDay =1;
 
-   for(let day  = 1; day <= curMonthDays;){
-        showMonth+="<div><ul class='tableRow'>";
-        for(let weekDay = 1; weekDay <=7 && day <= curMonthDays; weekDay++){
+        let curRow = 0;//当前组装第几行
 
-            if(prev > 0){//显示上一个月
-                showMonth+="<li class='prev'>" + prevDay +"</li>";
-                prev--;
-                prevDay++;
-            }else{
+        let SHOW_MONTH_ROWS=6;
 
-                if(currentDay === day )
-                    showMonth+="<li class='curDay'>"+day+"</li>";
-                else
-                    showMonth+="<li>"+day+"</li>";
-                day++;
+        for(let day  = 1; day <= curMonthDays;){
+            curRow++;
+            createCalender+="<ul class='tableRow'>";
+            for(let weekDay = 1; weekDay <=7 && day <= curMonthDays; weekDay++){
+
+                if(prev > 0){//显示上一个月
+                    createCalender+="<li class='prev'>" + prevDay +"</li>";
+                    prev--;
+                    prevDay++;
+                }else{
+
+                    if(currentDay === day )
+                        createCalender+="<li class='curDay'>"+day+"</li>";
+                    else
+                        createCalender+="<li>"+day+"</li>";
+                    day++;
+                }
+
             }
+            //显示下一个月
+
+            if(day > curMonthDays  && next > 0){
+
+                while(next > 0){
+                    createCalender += "<li class='next'>"+nextDay+"</li>";
+                    nextDay++;
+                    next--;
+                }
+
+            }
+            createCalender+="</ul>";
 
         }
-        //显示下一个月
 
-        if(day > curMonthDays  && next > 0){
-
-            while(next > 0){
-                showMonth += "<li class='next'>"+nextDay+"</li>";
-                nextDay++;
-                next--;
+        //补上展示的行数
+        while(curRow < SHOW_MONTH_ROWS){
+            curRow++;
+            createCalender+="<ul class='tableRow'>";
+            for(let nextWeekDay =1 ; nextWeekDay <= 7;nextWeekDay++,nextDay++){
+                createCalender += "<li class='next'>"+nextDay+"</li>";
             }
-
+            createCalender+="</ul>";
         }
-        showMonth+="</ul></div>";
 
-   }
-   return showMonth;
+        return createCalender;
 
-}
-function monthCalender(year,month){
-
-    
-   
-    let lastMonthDays = this.monthDays(year,month-1);
-
-    let monthDays = this.monthDays(year,month);
-    
-
-    let weekOfDay = this.monthFirstWeekDay(year,month) ;
-
-    let lastWeekDay = this.monthLastWeekDay(year,month,monthDays);
-
-    //如果是当前年月就标记今天
-    let currentDay = -1;
-    let nowDate =new Date();
-    if(year === nowDate.getFullYear() && month === nowDate.getMonth()){
-        currentDay = nowDate.getDate();
-    }
-    return this.produceMonthCalender(lastMonthDays,monthDays,weekOfDay,lastWeekDay,currentDay);
-}
-function lastMonthCalender(){//month:[0-11]
-
-   
-    let curYear  = Number(pageYear.value);
-
-    let lastMonth = Number(pageMonth.value)-1-1;//-1是本月对应js中的月份===>实际是1月，在js中表示1月：0，再-1才是上一个月
-
-    if(lastMonth >=0){
-         this.updateWebPage(curYear,lastMonth+1);
-    }else{
-         this.updateWebPage(curYear-1,12);
-    }
-}
-function nextMonthCalender(){
-    let curYear  = Number(pageYear.value);
-
-    let nextMonth = Number(pageMonth.value) ;//已经是curMonth + 1
-
-   
-    if(nextMonth >11){
-        this.updateWebPage(curYear+1,1); 
-    }else{
-        this.updateWebPage(curYear,nextMonth+1); 
-    }
-}
-function updateWebPage(year,month){
-    if( year === undefined || year===null){
-        year = new Date().getFullYear();
-        month = new Date().getMonth() +1;
-    }    
-    pageYear.value      = year+"";
-    pageMonth.value     = month+"";
-    showYear.innerHTML  = year+"";
-    showMonth.innerHTML = month+"";
-    // console.log(pageYear.value)
-    pageTable.innerHTML = this.monthCalender(year,month-1);
-}
-
-document.getElementById('container').addEventListener('load',updateWebPage())
-
-/**
- * 月份输入框监听事件
- * */
-pageMonth.addEventListener('change',this.changeInput.bind(this));
-
-/**
- * 绑定年份输入框监听事件
- * */
-
-pageYear.addEventListener('change',this.changeInput.bind(this));
-
-/**
- * 
- * 绑定 '-'减月份按钮的点击事件
- * 
- * */
-minusMonth.addEventListener('click',this.minus_month.bind(this));
-/**
- * 绑定 '-'减年份按钮的点击事件
- * 
- * */
-minusYear.addEventListener('click',this.minus_year.bind(this));
-/**
- * 绑定 '+'加月份按钮的点击事件
- * 
- * */
-plusMonth.addEventListener('click',this.plus_month.bind(this));
-
-/**
- * 绑定 '+'加年份按钮的点击事件
- * 
- * */
-plusYear.addEventListener('click',this.plus_year.bind(this));
-
-
-btnLeft.addEventListener('click',this.minus_month.bind(this));
-
-btnRight.addEventListener('click',this.plus_month.bind(this));
-
-
-function changeInput(){
-    this.changeYearOrMonth(pageYear.value,pageMonth.value);
-}
-
-function changeYearOrMonth(yearVal,monthVal){
-
-    try{
-   
-     this.checkTime(yearVal,monthVal);
-     this.updateWebPage(Number(yearVal),Number(monthVal));
-    }catch(e){
-        confirm(e);
     }
 
-}
 
-function minus_year(){
 
-    this.changeYearOrMonth(Number(pageYear.value)-1+"",pageMonth.value);
-}
 
-function minus_month(){
 
-    try{
-        this.checkTime(pageYear.value,pageMonth.value);
-        this.lastMonthCalender();
-    }catch(e){
-        confirm(e)
+
+    function monthCalender(year,month){
+
+
+
+        let lastMonthDays = this.monthDays(year,month-1);
+
+        let monthDays = this.monthDays(year,month);
+
+
+        let weekOfDay = this.dateMapWeekDay(year,month,1) ;
+
+        let lastWeekDay = this.dateMapWeekDay(year,month,monthDays);
+
+        //如果是当前年月就标记今天
+        let currentDay = -1;
+        let nowDate =new Date();
+        if(year === nowDate.getFullYear() && month === nowDate.getMonth()){
+            currentDay = nowDate.getDate();
+        }
+        return this.produceMonthCalender(lastMonthDays,monthDays,weekOfDay,lastWeekDay,currentDay);
     }
-   
-}
+    function lastMonthCalender(){//month:[0-11]
 
-function plus_year(){
-    this.changeYearOrMonth(Number(pageYear.value)+1+"",pageMonth.value);
 
-}
+        let curYear  = Number(inputYear.value);
 
-function plus_month(){
-    try{
-        this.checkTime(pageYear.value, pageMonth.value);
-        this.nextMonthCalender();
-    }catch(e){
-        confirm(e)
+        let lastMonth = Number(inputMonth.value)-1-1;//-1是本月对应js中的月份===>实际是1月，在js中表示1月：0，再-1才是上一个月
+
+        if(lastMonth >=0){
+            this.updateWebPage(curYear,lastMonth+1);
+        }else{
+            this.updateWebPage(curYear-1,12);
+        }
     }
-}
+    function nextMonthCalender(){
+        let curYear  = Number(inputYear.value);
 
-function checkTime(year,month){
+        let nextMonth = Number(inputMonth.value) ;//已经是curMonth + 1
 
-    if(!month.match(/^\d+$/)){
-        throw '【月份】错误：'+month;
+
+        if(nextMonth >11){
+            this.updateWebPage(curYear+1,1);
+        }else{
+            this.updateWebPage(curYear,nextMonth+1);
+        }
+    }
+    function updateWebPage(year,month){
+        if( year === undefined || year===null){
+            year = new Date().getFullYear();
+            month = new Date().getMonth() +1;
+        }
+        inputYear.value      = year+"";
+        inputMonth.value     = month+"";
+        showYear.innerHTML  = year+"";
+        showMonth.innerHTML = month+"";
+        // console.log(inputYear.value)
+        showMonthCalender.innerHTML = this.monthCalender(year,month-1);
     }
 
-    if(Number(month) < 1 || Number(month) > 12){
-        throw '【月份】错误：'+month;
-     }
+    document.getElementById('container').addEventListener('load',updateWebPage())
 
-    if(!year.match(/^\-?\d+$/)){       
-        throw '【年份】错误：'+year;
+    /**
+     * 月份输入框监听事件
+     * */
+    inputMonth.addEventListener('change',this.changeInput.bind(this));
+
+    /**
+     * 绑定年份输入框监听事件
+     * */
+
+    inputYear.addEventListener('change',this.changeInput.bind(this));
+
+    /**
+     *
+     * 绑定 '-'减月份按钮的点击事件
+     *
+     * */
+    minusMonth.addEventListener('click',this.minusOneMonth.bind(this));
+    /**
+     * 绑定 '-'减年份按钮的点击事件
+     *
+     * */
+    minusYear.addEventListener('click',this.minusOneYear.bind(this));
+    /**
+     * 绑定 '+'加月份按钮的点击事件
+     *
+     * */
+    plusMonth.addEventListener('click',this.plusOneMonth.bind(this));
+
+    /**
+     * 绑定 '+'加年份按钮的点击事件
+     *
+     * */
+    plusYear.addEventListener('click',this.plusOneYear.bind(this));
+
+    /**
+     * 绑定  '<' 减少月份按钮的点击事件
+     * */
+    btnLeft.addEventListener('click',this.minusOneMonth.bind(this));
+    /**
+     * 绑定  '>' 月份按钮的点击事件
+     * */
+    btnRight.addEventListener('click',this.plusOneMonth.bind(this));
+
+
+    function changeInput(){
+        this.changeYearOrMonth(inputYear.value,inputMonth.value);
     }
-}
+
+    function changeYearOrMonth(yearVal,monthVal){
+
+        try{
+
+            this.checkTime(yearVal,monthVal);
+            this.updateWebPage(Number(yearVal),Number(monthVal));
+        }catch(e){
+            confirm(e);
+        }
+
+    }
+
+    function minusOneYear(){
+
+        this.changeYearOrMonth(Number(inputYear.value)-1+"",inputMonth.value);
+    }
+
+    function minusOneMonth(){
+
+        try{
+            this.checkTime(inputYear.value,inputMonth.value);
+            this.lastMonthCalender();
+        }catch(e){
+            confirm(e)
+        }
+
+    }
+
+    function plusOneYear(){
+        this.changeYearOrMonth(Number(inputYear.value)+1+"",inputMonth.value);
+
+    }
+
+    function plusOneMonth(){
+        try{
+            this.checkTime(inputYear.value, inputMonth.value);
+            this.nextMonthCalender();
+        }catch(e){
+            confirm(e)
+        }
+    }
+
+    function checkTime(year,month){
+
+        if(!month.match(/^\d+$/)){
+            throw '【月份】错误：'+month;
+        }
+
+        if(Number(month) < 1 || Number(month) > 12){
+            throw '【月份】错误：'+month;
+        }
+
+        if(!year.match(/^\-?\d+$/)){
+            throw '【年份】错误：'+year;
+        }
+    }
 
 
 </script>
@@ -333,19 +345,19 @@ function checkTime(year,month){
         padding:0px;
         width: 70%;
         text-align: center;
-        
+
     }
 
-    
 
-   
+
+
 
     #title-btn-left,#title-btn-right{
 
         margin:  20px 0px 20px 0px;
-       
+
         padding:0px 15px 0px 15px;
-        
+
         font-size: 40px;
         border: 0px;
         background: rgb(251, 250, 250);
@@ -379,16 +391,24 @@ function checkTime(year,month){
         line-height: 20px;
         box-sizing: border-box;
         float: left;
-        font-family: sans-serif;
+        font-family:  sans-serif;
 
     }
-    
+    /* //sans-serif */
+
+    .li-title{
+
+        font-family:'宋体';
+        /* font-weight: bolder */
+
+    }
+
     .title{
         width: 100%;
         /* height: 250px; */
 
         padding: 50px 0px 60px 0px;
-        
+
         display: flex;
         flex-direction: row;
         justify-content: space-between;
@@ -423,9 +443,10 @@ function checkTime(year,month){
         background: rgb(250, 250, 250);
         border-color: rgb(174, 177, 177);
         border: 1px;
-        
+
 
     }
+
     .tableRow{
 
 
@@ -437,6 +458,8 @@ function checkTime(year,month){
         font-family: '宋体';
 
     }
+
+
 
     #table{
         width: 100%;
@@ -469,7 +492,7 @@ function checkTime(year,month){
 
         background: rgb(250, 250, 250);
 
-        
+
     }
 
     .prev,.next{
@@ -479,7 +502,7 @@ function checkTime(year,month){
 
     /* .next{
         color:rgb(213, 222, 202);
-        
+
     } */
 
     .curDay{
